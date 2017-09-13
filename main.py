@@ -1,38 +1,33 @@
 import re
 import numpy as np
-import scipy.spatial as sc
+from scipy import spatial
+from collections import Counter
 
 f = open('sentences.txt', 'r')
 sentences = [i.lower() for i in f.read().split('\n') if i != ""]
+words = []
+for i, sentence in enumerate(sentences):
+    tmp = []
+    for j in re.split('[^a-z]', sentence):
+        if j != "":
+            tmp.append(j)
+    words.append(tmp)
 
-words = [re.split('[^a-z]', i) for i in sentences]
-res = []
-for i in words:
-    res.extend(i)
-words = np.array(res)
-words = np.delete(words, np.argwhere(words == ""))
-d = dict()
+all_words = dict()
 k = 0
-for i in words:
-    if i not in d.values():
-        d[k] = i
-        k += 1
+for s_words in words:
+    for word in s_words:
+        if word not in all_words:
+            all_words[word] = 0
+        all_words[word] += 1
+res = np.array([[0]*len(all_words) for i in np.arange(len(sentences))])
 
-m = [[0]*k for i in range(len(sentences))]
-for i in range(len(m)):
-    for j in range(len(m[0])):
-        k = 0
-        words_tmp = re.split('[^a-z]', sentences[i])
-        res1 = []
-        for qwe in words_tmp:
-            res1.extend(qwe)
-        words_tmp = np.array(res1)
-        words_tmp = np.delete(words_tmp, np.argwhere(words == ""))
-
-        d1 = dict()
-        k1 = 0
-        for qwe in words_tmp:
-            if qwe not in d1.values():
-                d1[k1] = qwe
-                k += 1
-sc.distance.cosine()
+for i, s_words in enumerate(words):
+    co = Counter(s_words)
+    for j, word in enumerate(all_words):
+        res[i][j] = co[word]
+distances = []
+for i in range(1, len(res)):
+    distances.append(spatial.distance.cosine(res[0], res[i]))
+print distances.index(min(distances))
+print distances

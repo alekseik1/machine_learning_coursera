@@ -18,16 +18,27 @@ k = 0
 for s_words in words:
     for word in s_words:
         if word not in all_words:
-            all_words[word] = 0
-        all_words[word] += 1
-res = np.array([[0]*len(all_words) for i in np.arange(len(sentences))])
+            all_words[word] = k
+            k += 1
 
+
+res = np.array([[0]*len(all_words) for i in np.arange(len(sentences))])
 for i, s_words in enumerate(words):
     co = Counter(s_words)
-    for j, word in enumerate(all_words):
-        res[i][j] = co[word]
+    for j in co:
+        res[i][all_words[j]] = co[j]
+
+#print res[0][all_words['osx']]
+
 distances = []
 for i in range(1, len(res)):
     distances.append(spatial.distance.cosine(res[0], res[i]))
-print distances.index(min(distances))
-print distances
+s_distances = sorted(distances)
+
+
+# PROVE
+
+#tmp = [no for no, x in enumerate(res[0]) if x != 0]
+#print(tmp)
+#for j in tmp:
+#    print [i for i, x in all_words.iteritems() if x == j]

@@ -35,6 +35,8 @@ for i in range(1, len(res)):
     distances.append(spatial.distance.cosine(res[0], res[i]))
 s_distances = sorted(distances)
 
+print distances.index(s_distances[0])
+print distances.index(s_distances[1])
 
 # PROVE
 

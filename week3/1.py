@@ -21,5 +21,6 @@ res2 = sc.minimize(f, [2], method='bfgs')
 
 # 3 variant
 res3 = sc.minimize(f, [30], method='bfgs')
+print res3
 plt.plot(x, y, 'g', res2.x, res2.fun, 'rs', res3.x, res3.fun, 'bs')
 plt.show()
